@@ -2,61 +2,43 @@ import math
 import sys
 
 
-def read_center_radius(circle_path):
-    try:
-        with open(circle_path, encoding="utf-8") as file:
-            center_x, center_y = map(float, file.readline().split())
-            radius = float(file.readline().strip())
-        return center_x, center_y, radius
+def find_point_position(point_x, point_y, center_x, center_y, radius):
+    vector_len = math.sqrt(((center_x - point_x) ** 2 + (center_y - point_y) ** 2))
 
-    except FileNotFoundError:
-        print("Невозможно открыть файл")
-        sys.exit(1)
-    except Exception as e:
-        print("Ошибка при работе с файлом: ", str(e))
-        sys.exit(1)
-
-
-def read_dots(dot_path):
-    try:
-        with open(dot_path, encoding="utf-8") as file:
-            dots = []
-            for line in file:
-                dots.append(tuple(map(int, line.split())))
-        return dots
-
-    except FileNotFoundError:
-        print("Невозможно открыть файл")
-        sys.exit(1)
-    except Exception as e:
-        print("Ошибка при работе с файлом:", str(e))
-        sys.exit(1)
-
-
-def check_points(x, y, center_x, center_y, radius):
-    d = math.sqrt(((center_x - x) ** 2 + (center_y - y) ** 2))
-
-    if math.isclose(d, radius, rel_tol=1e-6):
+    if vector_len == radius:
         return 0
-    if d < radius:
+    if vector_len < radius:
         return 1
-    if d > radius:
+    if vector_len > radius:
         return 2
 
 
 def main():
-    if len(sys.argv) != 3:
-        print("Использование: python task2 circle.txt dot.txt")
+    try:
+        file_circle = sys.argv[1]
+        file_dot = sys.argv[2]
+    except:
+        print("Ожидаемый ввод: python task2.py circle.txt dot.txt")
         sys.exit(1)
 
-    circle_path = sys.argv[1]
-    dot_path = sys.argv[2]
+    try:
+        with open(file_circle, "r") as file:
+            circle_arr = file.read().split()
+            center_x = float(circle_arr[0].strip())
+            center_y = float(circle_arr[1].strip())
+            radius = float(circle_arr[2].strip())
 
-    center_x, center_y, r = read_center_radius(circle_path)
-    dots = read_dots(dot_path)
+        with open(file_dot, "r") as file:
+            dots = []
+            for line in file:
+                coords = tuple(map(float, line.split()))
+                dots.append(coords)
+    except:
+        print("Ошибка при работе с файлом dot.txt или circle.txt")
+        sys.exit(1)
 
     for d in dots:
-        print(check_points(*d, center_x, center_y, r))
+        print(find_point_position(*d, center_x, center_y, radius))
 
 
 if __name__ == "__main__":

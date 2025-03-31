@@ -1,37 +1,31 @@
 import sys
 
 
-def calculate_min_movies(nums):
-    if not nums:
-        return 0
-    nums.sort()
-    m = nums[len(nums) // 2]
-    return sum([abs(m-num) for num in nums])
-
-
-def read_numbers(path):
-    nums = []
-    try:
-        with open(path, "r", encoding="utf-8") as file:
-            for line in file:
-                nums.append(int(line.strip()))
-            return nums
-
-    except Exception as e:
-        print(f"Ошибка при работе с файлом: {str(e)}")
-        sys.exit(1)
-
-
 def main():
-    if len(sys.argv) != 2:
-        print("Использование: python task4.py numbers.txt")
+    try:
+        numbers_file = sys.argv[1]
+    except:
+        print("Ожидаемый ввод: python task4.py numbers.txt")
         sys.exit(1)
 
-    numbers_path = sys.argv[1]
+    nums = []
 
-    numbers = read_numbers(numbers_path)
-    movies = calculate_min_movies(numbers)
-    print(movies)
+    try:
+        with open(numbers_file, "r", encoding="utf-8") as file:
+            for line in file:
+                n = int(line.strip())
+                nums.append(n)
+    except:
+        print("Ошибка при работе с файлом numbers.txt")
+        sys.exit(1)
+
+    nums.sort()
+    middle_element = nums[len(nums) // 2]
+    res_sum = 0
+    for num in nums:
+        res_sum += abs(middle_element - num)
+
+    print(res_sum)
 
 
 if __name__ == "__main__":
